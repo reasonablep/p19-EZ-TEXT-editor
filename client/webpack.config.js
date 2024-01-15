@@ -2,16 +2,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const path = require('path');
 const { InjectManifest } = require('workbox-webpack-plugin');
-
-// TODO: Add and configure workbox plugins for a service worker and manifest file.
-// TODO: Add CSS loaders and babel to webpack.
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = () => {
   return {
     mode: 'development',
     entry: {
       main: './src/js/index.js',
-      install: './src/js/install.js'
+      install: './src/js/install.js',
+      header: './src/js/header.js',
+      database: './src/js/database.js',
+      editor: './src/js/editor.js'
     },
     output: {
       filename: '[name].bundle.js',
@@ -21,7 +22,7 @@ module.exports = () => {
       new HtmlWebpackPlugin({
         template: './src/index.html',
         filename: 'index.html',
-        chunks: ['main']
+        title: 'WebPackPlugin'
       }),
       new HtmlWebpackPlugin({
         template: './src/install.html',
@@ -29,20 +30,29 @@ module.exports = () => {
         chunks: ['install']
       }),
       new WebpackPwaManifest ({
+        fingerprints: false,
+        inject: true,
         name: 'Just Another Text Editor',
         short_name: 'JATE',
         description: 'A simple and lightweight PWA-based text editor',
+        background_color: '#225ca3',
+        theme_color: '#225ca3',
+        start_url: './',
+        publicPath: './',
         icons: [
           {
             src: path.resolve('src/images/logo.png'),
-            sizes: [96, 128, 192, 256, 384, 512]
+            sizes: [96, 128, 192, 256, 384, 512],
+            destination: path.join('assets', 'icons')
           },
         ],
       }),
 
+
+
       new InjectManifest ({
-        swSrc: './src/service-worker.js',
-        swDest: 'service-worker.js'
+        swSrc: './src/sw.js',
+        swDest: 'src-sw.js'
       }),
       
     ],
