@@ -2,7 +2,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const path = require('path');
 const { InjectManifest } = require('workbox-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = () => {
   return {
@@ -20,12 +19,12 @@ module.exports = () => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: './src/index.html',
+        template: './index.html',
         filename: 'index.html',
         title: 'WebPackPlugin'
       }),
       new HtmlWebpackPlugin({
-        template: './src/install.html',
+        template: './src/js/install.js',
         filename: 'install.html',
         chunks: ['install']
       }),
@@ -38,7 +37,6 @@ module.exports = () => {
         background_color: '#225ca3',
         theme_color: '#225ca3',
         start_url: './',
-        publicPath: './',
         icons: [
           {
             src: path.resolve('src/images/logo.png'),
@@ -51,7 +49,7 @@ module.exports = () => {
 
 
       new InjectManifest ({
-        swSrc: './src/sw.js',
+        swSrc: './src-sw.js',
         swDest: 'src-sw.js'
       }),
       
@@ -70,7 +68,7 @@ module.exports = () => {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel.preset-env']
+              presets: ['@babel/preset-env']
             },
           },
         },
