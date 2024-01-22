@@ -32,9 +32,6 @@ registerRoute(({ request }) =>
 
 ['style', 'script', 'worker'].includes(request.destination),
 
-  // request.destination === 'style' ||
-  // request.destination === 'script' ||
-  // request.destination === 'worker',
 
   new StaleWhileRevalidate({
     cacheName: 'assets-cache',
@@ -45,5 +42,3 @@ registerRoute(({ request }) =>
     ]
   })
 );
-
-ww
