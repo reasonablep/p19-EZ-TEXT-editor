@@ -1,26 +1,39 @@
+// Creates logic for installation of app
+
+// Listen for click of the install button
+
 const butInstall = document.getElementById('buttonInstall');
 
-// Logic for installing the PWA
+// Handle the 'beforeinstallprompt' event 
 
 window.addEventListener('beforeinstallprompt', (event) => {
- event.preventDefault();
- 
- // Update UI so user knows app is installable
 
- butInstall.style.visibility = 'visible';
- 
+
+    // Store the event object for later use
+
+    window.deferredPrompt = event;
+    butInstall.classList.toggle('hidden', false);
+
 });
 
+
+// 
+
 butInstall.addEventListener('click', async () => {
-    const promptEvent = await window.deferredPrompt.prompt();
+    const choiceResult = window.deferredPrompt;
 
-    const choiceResult = await promptEvent.userChoice;
+    if (!choiceResult) {
+        console.log('No choice made')
+        return;
+    }
 
-if (choiceResult.outcome === 'accepted') {
-    console.log('User accepted install prompt');
-} else {
+    // Display installation prompt
+
+    choiceResult.prompt()
+    window.deferredPrompt = null;
     console.log('User dismissed install prompt');
-}
+
+butInstall.classList.toggle('hidden', true);
 
 });
 

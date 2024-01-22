@@ -9,9 +9,6 @@ module.exports = () => {
     entry: {
       main: './src/js/index.js',
       install: './src/js/install.js',
-      header: './src/js/header.js',
-      database: './src/js/database.js',
-      editor: './src/js/editor.js'
     },
     output: {
       filename: '[name].bundle.js',
@@ -20,14 +17,14 @@ module.exports = () => {
     plugins: [
       new HtmlWebpackPlugin({
         template: './index.html',
-        filename: 'index.html',
         title: 'WebPackPlugin'
       }),
-      new HtmlWebpackPlugin({
-        template: './src/js/install.js',
-        filename: 'install.html',
-        chunks: ['install']
+
+      new InjectManifest ({
+        swSrc: './src-sw.js',
+        swDest: 'src-sw.js'
       }),
+
       new WebpackPwaManifest ({
         fingerprints: false,
         inject: true,
@@ -45,13 +42,6 @@ module.exports = () => {
           },
         ],
       }),
-
-
-
-      new InjectManifest ({
-        swSrc: './src-sw.js',
-        swDest: 'src-sw.js'
-      }),
       
     ],
 
@@ -63,12 +53,13 @@ module.exports = () => {
         },
 
         {
-          test: /\.js$/,
+          test: /\.m?js$/,
           exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env']
+              presets: ['@babel/preset-env'],
+              plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/transform-runtime'],
             },
           },
         },

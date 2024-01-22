@@ -1,5 +1,7 @@
 import { openDB } from 'idb';
 
+// Initiate indexedDB database
+
 const initdb = async () =>
   openDB('jate', 1, {
     upgrade(db) {
@@ -12,25 +14,31 @@ const initdb = async () =>
     },
   });
 
+// 
+
 export const putDb = async (content) => {
-  const db = await initdb();
+  const db = await openDB('jate', '1');
   const tx = db.transaction('jate', 'readwrite');
   const store = tx.objectStore('jate');
-  await store.add({ content })
-  await tx.done;
-  console.log('Data added to the DB', content);
+  const request = store.put({ id: 1, value: content });
+  const results = await request;
+  console.log('Data added to the DB', results.value);
 }
-console.error('putDb not implemented');
+
+// Get DB data from IndexedDB
 
 export const getDb = async () => {
-  const db = await initdb();
-  const tx = db.transaction('jate', readonly);
+  const db = await openDB('jate', '1');
+  const tx = db.transaction('jate', 'readonly');
   const store = tx.objectStore('jate');
-  const allContent = await store.getAll();
-  await tx.done;
-  console.log('All content from DB', allContent);
-  return allContent;
+  const request = store.getAll();
+  const results = await request;
+  if (results) {
+    console.log('Database found');
+    return results.value;
+  } else {
+    console.log('Data not found');
+  }
 }
-  console.error('getDb not implemented');
 
 initdb();
